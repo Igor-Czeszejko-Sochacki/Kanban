@@ -15,12 +15,14 @@ namespace Kanban.Services
         private readonly IRepository<KanbanTask> _kanbantaskrepo;
         private readonly IRepository<UserTask> _usertaskrepo;
         private readonly IRepository<User> _userrepo;
+        private readonly IRepository<Subtask> _subtaskrepo;
 
-        public KanbanTaskService(IRepository<KanbanTask> repo, IRepository<UserTask> usertaskrepo, IRepository<User> userrepo)
+        public KanbanTaskService(IRepository<KanbanTask> taskrepo, IRepository<UserTask> usertaskrepo, IRepository<User> userrepo, IRepository<Subtask> subtaskrepo)
         {
-            _kanbantaskrepo = repo;
+            _kanbantaskrepo = taskrepo;
             _userrepo = userrepo;
             _usertaskrepo = usertaskrepo;
+            _subtaskrepo = subtaskrepo;
         }
 
         public async Task<ResultDTO> AddTaskWithUser(AddTaskWithUserVM addTaskWithUserVM)
@@ -50,6 +52,7 @@ namespace Kanban.Services
                 {
                     await _kanbantaskrepo.Add(task);
                     var userList = addTaskWithUserVM.UserList;
+                    var subtaskList = addTaskWithUserVM.SubtaskList;
                     foreach (UserWithoutIdDTO user in userList)
                     {
                         var findUser = await _userrepo.GetSingleEntity(x => x.Name == user.Name && x.Surname == user.Surname);
@@ -59,6 +62,16 @@ namespace Kanban.Services
                             KanbanTask = task
                         };
                         await _usertaskrepo.Add(usertask);
+                    }
+                    foreach (SubtaskWithoutIdDTO subtask in subtaskList)
+                    {
+                        var newSubtask = new Subtask()
+                        {
+                            Description = subtask.Description,
+                            CompletionStatus = subtask.CompletionStatus,
+                            KanbanTaskId = task.Id
+                        };
+                        await _subtaskrepo.Add(newSubtask);
                     }
                 }
             }
@@ -163,6 +176,26 @@ namespace Kanban.Services
                         else
                             result.Response = "Task was patched, but one of the users does not exist";
                     }
+
+                    var subtaskList = await _subtaskrepo.GetAll();
+                    foreach (Subtask subtask in subtaskList)
+                    {
+                        if (subtask.KanbanTaskId == task.Id)
+                        {
+                            await _subtaskrepo.Delete(subtask);
+                        }
+                    }
+                    foreach (SubtaskWithoutIdDTO subtask in taskToUsersVM.SubtaskList)
+                    { 
+                            var newSubtask = new Subtask()
+                            {
+                                Description = subtask.Description,
+                                CompletionStatus = subtask.CompletionStatus,
+                                KanbanTaskId = task.Id
+                            };
+                            await _subtaskrepo.Add(newSubtask);
+                    }
+
                 }
                 else
                     result.Response = "Task does not exist";
@@ -184,6 +217,8 @@ namespace Kanban.Services
             {
                 var userTaskList = await _usertaskrepo.GetAll();
                 var usersList = new List<User>();
+                var subtaskList = await _subtaskrepo.GetAll();
+                var finalSubtaskList = new List<SubtaskWithoutIdDTO>();
                 foreach (UserTask userTask in userTaskList)
                 {
                     if (userTask.KanbanTaskId == kanbanTaskId)
@@ -192,10 +227,23 @@ namespace Kanban.Services
                         usersList.Add(user);
                     }
                 }
+                foreach (Subtask subtask in subtaskList)
+                {
+                    if (subtask.KanbanTaskId == kanbanTaskId)
+                    {
+                        var newSubtask = new SubtaskWithoutIdDTO()
+                        {
+                            Description = subtask.Description,
+                            CompletionStatus = subtask.CompletionStatus
+                        };
+                        finalSubtaskList.Add(newSubtask);
+                    }
+                }
                 var finalKanbanTask = new TaskWIthUsersDTO()
                 {
                     KanbanTask = kanbanTask,
-                    UserList = usersList
+                    SubtaskList = finalSubtaskList,
+                    UserList = usersList           
                 };
                 return finalKanbanTask;
             }
@@ -208,6 +256,7 @@ namespace Kanban.Services
             var kanbanTaskList = await _kanbantaskrepo.GetAll();
             List<PriorityWithAllTasksDTO> priorityWithAllTasksListList = new List<PriorityWithAllTasksDTO>();
             var userTaskList = await _usertaskrepo.GetAll();
+            var subtaskList = await _subtaskrepo.GetAll();
             for (var i = minPriority; i <= maxPriority; i++)
             {
                 PriorityWithAllTasksDTO priorityWithAllTasks = (new PriorityWithAllTasksDTO
@@ -228,6 +277,19 @@ namespace Kanban.Services
                                 userList.Add(user);
                             }
                         }
+                        List<SubtaskWithoutIdDTO> finalSubtaskList = new List<SubtaskWithoutIdDTO>();
+                        foreach (Subtask subtask in subtaskList)
+                        {
+                            if (subtask.KanbanTaskId == task.Id)
+                            {
+                                var finalSubtask = new SubtaskWithoutIdDTO()
+                                {
+                                    Description = subtask.Description,
+                                    CompletionStatus = subtask.CompletionStatus
+                                };
+                                finalSubtaskList.Add(finalSubtask);
+                            }
+                        }
                         var temp = new AllTasksWithSamePriorityDTO()
                         {
                             Id = task.Id,
@@ -235,9 +297,10 @@ namespace Kanban.Services
                             Description = task.Description,
                             Status = task.Status,
                             ProgressStatus = task.ProgressStatus,
-                            UserList = userList,
                             Blocked = task.Blocked,
-                            Color = task.Color
+                            Color = task.Color,
+                            UserList = userList,
+                            SubtaskList = finalSubtaskList
                         };
                         priorityWithAllTasks.KanbanTasksList.Add(temp);
                     }

@@ -11,6 +11,7 @@ namespace Kanban.Model.Models.Request
     {
 
         public List<UserWithoutIdDTO> UserList { get; set; }
+        public List<SubtaskWithoutIdDTO> SubtaskList { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         [Required]

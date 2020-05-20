@@ -17,6 +17,7 @@ namespace Kanban.Model
         public int Priority { get; set; }
         public bool Blocked { get; set; } = false;
         public string Color { get; set; } = "default";
+        public List<Subtask> Subtasks { get; set; }
     }
 }
 

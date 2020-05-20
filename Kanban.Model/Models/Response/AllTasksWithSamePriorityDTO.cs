@@ -13,8 +13,10 @@ namespace Kanban.Model.Models.Response
         [Required]
         public string Status { get; set; }
         public int ProgressStatus { get; set; }
-        public List<User> UserList { get; set; }
         public bool Blocked { get; set; }
         public string Color { get; set; }
+        public List<User> UserList { get; set; }
+        public List<SubtaskWithoutIdDTO> SubtaskList { get; set; }
+
     }
 }

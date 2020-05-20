@@ -16,5 +16,6 @@ namespace Demcio.Repository
         public DbSet<KanbanTask> KanbanTasks { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserTask> UserTask { get; set; }
+        public DbSet<Subtask> Subtasks { get; set; }
     }
 }

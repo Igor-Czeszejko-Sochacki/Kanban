@@ -16,9 +16,9 @@ namespace Kanban.Service
         private readonly IRepository<User> _userrepo;
         private readonly IRepository<KanbanTask> _kanbantaskrepo;
         private readonly IRepository<UserTask> _usertaskrepo;
-        public UserService(IRepository<User> repo, IRepository<KanbanTask> taskrepo, IRepository<UserTask> usertaskrepo)
+        public UserService(IRepository<User> userrepo, IRepository<KanbanTask> taskrepo, IRepository<UserTask> usertaskrepo)
         {
-            _userrepo = repo;
+            _userrepo = userrepo;
             _kanbantaskrepo = taskrepo;
             _usertaskrepo = usertaskrepo;
         }

@@ -23,6 +23,8 @@
     <Compile Remove="Migrations\20200414223502_TaskUpdate2.Designer.cs" />
     <Compile Remove="Migrations\20200414223619_TaskUpdate2.cs" />
     <Compile Remove="Migrations\20200414223619_TaskUpdate2.Designer.cs" />
+    <Compile Remove="Migrations\20200520061642_Subtask.cs" />
+    <Compile Remove="Migrations\20200520061642_Subtask.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
