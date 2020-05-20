@@ -241,11 +241,18 @@ namespace Kanban.Services
                 }
                 var finalKanbanTask = new TaskWIthUsersDTO()
                 {
-                    KanbanTask = kanbanTask,
+                    Description = kanbanTask.Description,
+                    Title = kanbanTask.Title,
+                    Status = kanbanTask.Status,
+                    ProgressStatus = kanbanTask.ProgressStatus,
+                    Priority = kanbanTask.Priority,
+                    Color = kanbanTask.Color,
+                    Blocked = kanbanTask.Blocked,
                     SubtaskList = finalSubtaskList,
                     UserList = usersList           
                 };
                 return finalKanbanTask;
+
             }
         }
 
