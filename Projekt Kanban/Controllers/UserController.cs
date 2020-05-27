@@ -55,57 +55,5 @@ namespace Projekt_Kanban.Controllers
                 return BadRequest(result);
             return Ok("User was deleted");
         }
-
-        // --------------- Endpointy używane do poprzednich etapów projektu -------------------------------------------
-
-        //[HttpGet("GetSingleUser")]
-        //public async Task<IActionResult> GetSingleUser(int userId)
-        //{
-        //    var singleUser = await _userService.GetSingleUser(userId);
-        //    if (singleUser.SingleUser == null)
-        //        return BadRequest("User not found");
-        //    return Ok(singleUser);
-        //}
-
-
-
-        //[HttpPost("AssignTaskToUser")]
-        //public async Task<IActionResult> AssignTaskToUser(int taskId, int userId)
-        //{
-        //    var result = await _userService.AssignTaskToUser(taskId, userId);
-        //    if (result.Response != null)
-        //        return BadRequest(result);
-        //    return Ok("Task was assigned to user");
-        //}
-
-        //[HttpGet("AllTasksPerUser")]
-        //public async Task<IActionResult> GetAllTasksPerUser()
-        //{
-        //    var userTaskList = await _userService.GetAllTasksPerUser();
-        //    if (userTaskList == null)
-        //        return BadRequest("No users to show");
-        //    return Ok(userTaskList);
-        //}
-
-        //[HttpDelete("DeleteTaskFromUser")]
-        //public async Task<IActionResult> DeleteTaskFromUser(int userId, int taskId)
-        //{
-        //    var result = await _userService.DeleteTaskFromUser(userId, taskId);
-        //    if (result.Response != null)
-        //        return BadRequest(result);
-        //    return Ok("Task was deleted from user");
-        //}
-
-        //[HttpGet("AllUsersPerTask")]
-        //public async Task<IActionResult> GetAllUsersPerTask()
-        //{
-        //    var userTaskList = await _userService.GetAllUsersPerTask();
-        //    if (userTaskList == null)
-        //        return BadRequest("No tasks to show");
-        //    return Ok(userTaskList);
-        //}
-
-
-
     }
 }
